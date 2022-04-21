@@ -16,6 +16,12 @@ class LinkedList(object):  # noqa:WPS214
         self.head = None
         self.tail = None
 
+    def __iter__(self):
+        node = self.head
+        while node is not None:
+            yield node
+            node = node.next
+
     def add_in_tail(self, item):  # noqa:WPS110
         if self.head is None:
             self.head = item
@@ -39,45 +45,43 @@ class LinkedList(object):  # noqa:WPS214
 
     def find_all(self, searching_value):
         found_nodes = []
-        node = self.head
-        while node is not None:
+        for node in self:
             if node.value == searching_value:
                 found_nodes.append(node)
-            node = node.next
         return found_nodes
 
-    def delete(self, deleting_value, all=False):  # noqa:WPS125
-        previous_node = None
-        node = self.head
-        while node is not None:
+    def delete(self, deleting_value, all=False):  # noqa:WPS125, WPS231, C901
+        previous_node = self.head
+        for node in self:
             if node.value == deleting_value:
+                if self.head == self.tail:
+                    self.clean()
+                    return
                 if node == self.tail:
                     self.tail = previous_node
                     previous_node.next = None
                     return
                 if node == self.head:
                     self.head = node.next
-                else:
-                    previous_node.next = node.next
+                previous_node.next = node.next
                 if not all:
                     return
             previous_node = node
-            node = node.next
 
     def clean(self):
         self.head = None
         self.tail = None
 
     def len(self):
-        node = self.head
-        linked_list_length = 0
-        while node is not None:
-            linked_list_length += 1
-            node = node.next
-        return linked_list_length
+        return len(list(self))
 
     def insert(self, after_node, new_node):
-        if after_node == self.tail:
-            self.tail = new_node
+        if (self.head is None) or (after_node == self.tail):
+            self.add_in_tail(new_node)
+            return
+        if after_node is None:
+            new_node.next = self.head
+            self.head = new_node
+            return
         new_node.next = after_node.next
         after_node.next = new_node
