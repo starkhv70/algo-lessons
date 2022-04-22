@@ -5,17 +5,20 @@
 import pytest
 from lessons.linked_list import LinkedList, Node
 
-L_LIST_LEN = 6
+L_LIST_LEN = 9
 
 
 @pytest.fixture
 def linked_list():
     l_list = LinkedList()
     l_list.add_in_tail(Node(3))
+    l_list.add_in_tail(Node(3))
     l_list.add_in_tail(Node(5))
     l_list.add_in_tail(Node(7))
     l_list.add_in_tail(Node(3))
+    l_list.add_in_tail(Node(3))
     l_list.add_in_tail(Node(9))
+    l_list.add_in_tail(Node(3))
     l_list.add_in_tail(Node(3))
     return l_list
 
@@ -32,9 +35,17 @@ def linked_list_one():
     return l_list
 
 
+@pytest.fixture
+def linked_list_repeat():
+    l_list = LinkedList()
+    for _ in range(3):
+        l_list.add_in_tail(Node(1))
+    return l_list
+
+
 def test_find_all(linked_list):
     found_nodes = linked_list.find_all(3)
-    assert len(found_nodes) == 3
+    assert len(found_nodes) == 6
 
 
 def test_delete(linked_list):
@@ -58,6 +69,13 @@ def test_delete_one(linked_list_one):
     linked_list_one.delete(1)
     assert linked_list_one.head is None
     assert linked_list_one.tail is None
+
+
+def test_delete_full(linked_list_repeat):
+    linked_list_repeat.delete(1, all=True)
+    assert linked_list_repeat.len() == 0
+    assert linked_list_repeat.head is None
+    assert linked_list_repeat.tail is None
 
 
 def test_len(linked_list):

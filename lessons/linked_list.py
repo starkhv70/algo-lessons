@@ -63,7 +63,9 @@ class LinkedList(object):  # noqa:WPS214
                     return
                 if node == self.head:
                     self.head = node.next
-                previous_node.next = node.next
+                else:
+                    previous_node.next = node.next
+                    continue
                 if not all:
                     return
             previous_node = node
