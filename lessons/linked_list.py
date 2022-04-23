@@ -50,25 +50,28 @@ class LinkedList(object):  # noqa:WPS214
                 found_nodes.append(node)
         return found_nodes
 
+    def remove_node(self, previous_node, node):
+        if self.head == self.tail:
+            self.clean()
+            return
+        if node == self.tail:
+            self.tail = previous_node
+            self.tail.next = None
+            return
+        if node == self.head:
+            self.head = self.head.next
+        else:
+            previous_node.next = node.next
+
     def delete(self, deleting_value, all=False):  # noqa:WPS125, WPS231, C901
-        previous_node = self.head
+        previous_node = None
         for node in self:
             if node.value == deleting_value:
-                if self.head == self.tail:
-                    self.clean()
-                    return
-                if node == self.tail:
-                    self.tail = previous_node
-                    previous_node.next = None
-                    return
-                if node == self.head:
-                    self.head = node.next
-                else:
-                    previous_node.next = node.next
-                    continue
+                self.remove_node(previous_node, node)
                 if not all:
                     return
-            previous_node = node
+            else:
+                previous_node = node
 
     def clean(self):
         self.head = None
